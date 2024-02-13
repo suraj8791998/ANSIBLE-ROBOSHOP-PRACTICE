@@ -6,3 +6,6 @@ redis.suraj.website
 
 [mysql]
 mysql.suraj.website
+
+[rabbitmq]
+rabbitmq.suraj.website
