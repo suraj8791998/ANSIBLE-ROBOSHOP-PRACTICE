@@ -9,3 +9,13 @@ mysql.suraj.website
 
 [rabbitmq]
 rabbitmq.suraj.website
+
+[catalogue]
+catalogue.suraj.website
+
+[db:children]
+mongodb
+redis
+mysql
+rabbitmq
+
