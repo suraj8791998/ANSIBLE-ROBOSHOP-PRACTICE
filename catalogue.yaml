@@ -28,6 +28,10 @@
     register: directory
     ignore_errors: true
 
+  - name: PRINTING THE OUTPUT
+    ansible.builtin.debug:
+      msg: "{{directory}}"
+
 
 
 
