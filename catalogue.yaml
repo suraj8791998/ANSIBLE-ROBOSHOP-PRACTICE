@@ -17,7 +17,7 @@
     register: user
     ignore_errors: true
 
-  - when user.rc != 0
+  - when: user.rc != 0
     name: CREATING USER
     ansible.builtin.user:
       name: roboshop
