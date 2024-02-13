@@ -1,5 +1,6 @@
 - name: DEVELOPING CATALOGUE APPLICATION
   hosts: catalogue
+  become: yes
   tasks:
 
   - name: SETTING UP NODEJS
