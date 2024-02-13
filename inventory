@@ -1,2 +1,5 @@
 [mongodb]
 mongodb.suraj.website
+
+[redis]
+redis.suraj.website
