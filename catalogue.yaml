@@ -11,6 +11,7 @@
       state: present
 
   - name: CHECKING WHETHER USER EXISTS OR NOT
+    become: yes
     ansible.builtin.command: id roboshop
     register: user
     ignore_errors: true
