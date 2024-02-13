@@ -3,3 +3,6 @@ mongodb.suraj.website
 
 [redis]
 redis.suraj.website
+
+[mysql]
+mysql.suraj.website
