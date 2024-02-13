@@ -16,3 +16,19 @@
     ansible.builtin.command: id roboshop
     register: user
     ignore_errors: true
+
+  - when user.rc !=0
+    name: CREATING USER
+    ansible.builtin.user:
+      name: roboshop
+
+  - name: CHECK FOLDER EXISTS OR NOT
+    ansible.builtin.stat: 
+      path: /app
+    register: directory
+    ignore_errors: true
+    
+
+
+
+      
