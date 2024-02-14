@@ -36,6 +36,7 @@
     name: CREATING APP DIRECTORY
     ansible.builtin.file: 
       path: /app
+      state: directory
 
   - name: DOWNLOADING THE APPLICATION
     ansible.builtin.get_url:
