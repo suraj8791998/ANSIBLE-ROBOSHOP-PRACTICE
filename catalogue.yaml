@@ -72,7 +72,7 @@
   - name: INSTALLING MONGODB ORG
     ansible.builtin.yum:
       name: mongodb-org-shell
-      state: present
+      state: installed
 
   - name: COPYING MONGO.YAML
     ansible.builtin.copy:
@@ -81,6 +81,13 @@
 
   - name: LOADING THE SCHEMA
     ansible.builtin.command: mongo --host mongodb.suraj.website </app/schema/catalogue.js
+
+  - name: RESTARTING THE SERVICE
+      ansible.builtin.service:
+        name: catalogue
+        state: restarted
+        enabled: true
+
 
 
       
