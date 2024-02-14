@@ -1,0 +1,70 @@
+- name: DEVELOPING CART APPLICATION
+  hosts: cart
+  become: yes
+  tasks:
+
+  - name: SETTING UP NODEJS
+    ansible.builtin.shell: curl -sL https://rpm.nodesource.com/setup_lts.x | bash
+
+  - name: INSTALLING NODEJS
+    ansible.builtin.yum:
+      name: nodejs 
+      state: latest
+
+  - name: CHECKING WHETHER USER EXISTS OR NOT
+    become: yes
+    ansible.builtin.command: id roboshop
+    register: user
+    ignore_errors: true
+
+  - when: user.rc != 0
+    name: CREATING USER
+    ansible.builtin.user:
+      name: roboshop
+
+  - name: CHECK FOLDER EXISTS OR NOT
+    ansible.builtin.stat: 
+      path: /app
+    register: directory
+    ignore_errors: true
+
+  - name: PRINTING THE OUTPUT
+    ansible.builtin.debug:
+      msg: "{{directory}}"
+
+  - when: directory.stat.exists == false
+    name: CREATING APP DIRECTORY
+    ansible.builtin.file: 
+      path: /app
+      state: directory
+
+  - name: DOWNLOADING THE APPLICATIO CODE
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/cart.zip
+      dest: /tmp/cart.zip
+
+  - name: UNZIPPING THE APPLICATION
+    ansible.builtin.unarchive:
+      src: /tmp/cart.zip
+      dest: /app
+      remote_src: yes
+
+  - name: INSTALLING THE DEPENENDECIES
+    ansible.builtin.command: npm install 
+    args:
+      chdir: /app
+
+  - name: COPYING CART SERVICE
+    ansible.builtin.copy:
+      src: cart.service
+      dest: /etc/systemd/system/cart.service
+    
+  - name: DEAMON RELOADING
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+
+  - name: ENABLING AND RESTARTING THE SERVICE 
+    ansible.builtin.service:
+      name: cart
+      state: restarted
+      enabled: yes
