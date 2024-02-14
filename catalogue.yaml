@@ -83,10 +83,10 @@
     ansible.builtin.command: mongo --host mongodb.suraj.website </app/schema/catalogue.js
 
   - name: RESTARTING THE SERVICE
-      ansible.builtin.service:
-        name: catalogue
-        state: restarted
-        enabled: true
+    ansible.builtin.service:
+      name: catalogue
+      state: restarted
+      enabled: true
 
 
 
