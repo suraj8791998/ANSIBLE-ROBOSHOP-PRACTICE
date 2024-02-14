@@ -1,0 +1,57 @@
+- name: DEVELOPING REDIS APPLICATION
+  hosts: redis
+  become: yes
+  tasks:
+
+- name: INSTALLING MAVEN APPLICATION
+  ansible.builtin.yum:
+    name: maven
+    state: latest
+
+- name: CHECKING WHETHER USER EXISTS OR NOT
+  become: yes
+  ansible.builtin.command: id roboshop
+  register: user
+  ignore_errors: true
+
+- when: user.rc != 0
+  name: CREATING USER
+  ansible.builtin.user:
+    name: roboshop
+
+- name: CHECK FOLDER EXISTS OR NOT
+  ansible.builtin.stat: 
+    path: /app
+  register: directory
+  ignore_errors: true
+
+- name: PRINTING THE OUTPUT
+  ansible.builtin.debug:
+    msg: "{{directory}}"
+
+- when: directory.stat.exists == false
+  name: CREATING APP DIRECTORY
+  ansible.builtin.file: 
+    path: /app
+    state: directory
+
+  - name: DOWNLOADING THE APPLICATION CODE
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/shipping.zip
+      dest: /tmp/shipping.zip
+
+  - name: UNZIPPING THE APPLICATION 
+    ansible.builtin.unarchive:
+      src: /tmp/catalogue.zip
+      dest: /app
+      remote_src: yes
+
+  - name: INSTALLING THE DEPENENDECIES
+    ansible.builtin.command: mvn clean package
+    args:
+     chdir: /app
+
+  - name: RENAME JAR FILE
+    ansible.builtin.command: mv target/shipping-1.0.jar shipping.jar
+    args:
+      chdir: /app

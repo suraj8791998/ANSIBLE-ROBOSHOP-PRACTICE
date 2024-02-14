@@ -1,0 +1,76 @@
+- name: DEVELOPING RABBITMQ APPLICATION
+  hosts: rabbitmq
+  become: yes
+  tasks:
+
+  - name: INSTALLING THE APPLICATION
+    ansible.builtin.yum:
+      name: "{{item}}"
+      state: latest
+    loop:
+      - python36 
+      - gcc 
+      - python3-devel
+
+  
+  - name: CHECKING WHETHER USER EXISTS OR NOT
+    become: yes
+    ansible.builtin.command: id roboshop
+    register: user
+    ignore_errors: true
+
+  - when: user.rc != 0
+    name: CREATING USER
+    ansible.builtin.user:
+      name: roboshop
+
+  - name: CHECK FOLDER EXISTS OR NOT
+    ansible.builtin.stat: 
+      path: /app
+    register: directory
+    ignore_errors: true
+
+  - name: PRINTING THE OUTPUT
+    ansible.builtin.debug:
+      msg: "{{directory}}"
+
+  - when: directory.stat.exists == false
+    name: CREATING APP DIRECTORY
+    ansible.builtin.file: 
+      path: /app
+      state: directory
+
+  - name: DOWNLOADING THE APPLICATION
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/payment.zip
+      dest: /tmp/payment.zip
+
+  - name: UNZIPPING THE APPLICATION 
+    ansible.builtin.unarchive:
+      src: /tmp/payment.zip
+      dest: /app
+      remote_src: yes
+
+  - name: INSTALLING THE DEPENENDECIES
+    ansible.builtin.command: pip3.6 install -r requirements.txt
+    args:
+     chdir: /app
+
+  - name: COPYING PAYMENT SERVICE 
+    ansible.builtin.copy:
+      src: payment.service
+      dest: /etc/systemd/system/payment.service
+
+  - name: DEAMON RELOADING
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+
+  - name: ENABLING AND RESTARTING THE SERVICE 
+    ansible.builtin.service:
+      name: payment 
+      state: restarted
+      enabled: yes
+
+
+
+  
