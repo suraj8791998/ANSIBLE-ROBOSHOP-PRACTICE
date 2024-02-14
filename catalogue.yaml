@@ -68,6 +68,7 @@
       name: catalogue
       state: restarted
       enabled: yes
+
   - name: COPYING MONGO.YAML
     ansible.builtin.copy:
       src: mongo.repo
@@ -80,7 +81,7 @@
 
 
   - name: LOADING THE SCHEMA
-    ansible.builtin.command: mongo --host mongodb.suraj.website </app/schema/catalogue.js
+    ansible.builtin.command: mongo --host mongodb.suraj.website < /app/schema/catalogue.js
 
   - name: RESTARTING THE SERVICE
     ansible.builtin.service:
