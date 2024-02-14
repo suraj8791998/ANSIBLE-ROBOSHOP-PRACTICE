@@ -1,6 +1,6 @@
 - name: DEVELOPING WEB APPLICATION
   hosts: web
-  becomes: yes
+  become: yes
   tasks:
 
   - name: INSTALLING NGINX
