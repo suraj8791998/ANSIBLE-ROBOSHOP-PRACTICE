@@ -13,6 +13,9 @@ rabbitmq.suraj.website
 [catalogue]
 catalogue.suraj.website
 
+[web]
+web.suraj.website
+
 [db:children]
 mongodb
 redis
