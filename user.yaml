@@ -3,90 +3,90 @@
   become: yes
   tasks:
 
-- name: SETTING UP NODEJS
-  ansible.builtin.shell:  curl -sL https://rpm.nodesource.com/setup_lts.x | bash
+  - name: SETTING UP NODEJS
+    ansible.builtin.shell:  curl -sL https://rpm.nodesource.com/setup_lts.x | bash
 
-- name: INSTALLING NODEJS APPLICATION
-  ansible.builtin.yum:
+  - name: INSTALLING NODEJS APPLICATION
+    ansible.builtin.yum:
       name: nodejs 
       state: present
 
-- name: CHECKING WHETHER USER EXISTS OR NOT
-  become: yes
-  ansible.builtin.command: id roboshop
-  register: user
-  ignore_errors: true
+  - name: CHECKING WHETHER USER EXISTS OR NOT
+    become: yes
+    ansible.builtin.command: id roboshop
+    register: user
+    ignore_errors: true
 
-- when: user.rc != 0
-  name: CREATING USER
-  ansible.builtin.user:
-    name: roboshop
+  - when: user.rc != 0
+    name: CREATING USER
+    ansible.builtin.user:
+      name: roboshop
 
-- name: CHECK FOLDER EXISTS OR NOT
-  ansible.builtin.stat: 
-    path: /app
-  register: directory
-  ignore_errors: true
+  - name: CHECK FOLDER EXISTS OR NOT
+    ansible.builtin.stat: 
+      path: /app
+    register: directory
+    ignore_errors: true
 
-- name: PRINTING THE OUTPUT
-  ansible.builtin.debug:
-    msg: "{{directory}}"
+  - name: PRINTING THE OUTPUT
+    ansible.builtin.debug:
+      msg: "{{directory}}"
 
-- when: directory.stat.exists == false
-  name: CREATING APP DIRECTORY
-  ansible.builtin.file: 
-    path: /app
-    state: directory
+  - when: directory.stat.exists == false
+    name: CREATING APP DIRECTORY
+    ansible.builtin.file: 
+      path: /app
+      state: directory
 
-- name: DOWNLOADING THE APPLICATION
-  ansible.builtin.get_url:
-    url: https://roboshop-builds.s3.amazonaws.com/user.zip
-    dest: /tmp/user.zip
+  - name: DOWNLOADING THE APPLICATION
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/user.zip
+      dest: /tmp/user.zip
 
-- name: UNZIPPING THE APPLICATION 
-  ansible.builtin.unarchive:
-    src: /tmp/user.zip
-    dest: /app
+  - name: UNZIPPING THE APPLICATION 
+    ansible.builtin.unarchive:
+      src: /tmp/user.zip
+      dest: /app
     remote_src: yes
 
-- name: INSTALLING THE DEPENENDECIES
-  ansible.builtin.command: npm install 
-  args:
-    chdir: /app
+  - name: INSTALLING THE DEPENENDECIES
+    ansible.builtin.command: npm install 
+    args:
+      chdir: /app
 
-- name: COPYING user SERVICE 
-  ansible.builtin.copy:
-    src: user.service
-    dest: /etc/systemd/system/user.service
+  - name: COPYING user SERVICE 
+    ansible.builtin.copy:
+      src: user.service
+      dest: /etc/systemd/system/user.service
 
-- name: DEAMON RELOADING
-  ansible.builtin.systemd_service:
-    daemon_reload: true
+  - name: DEAMON RELOADING
+    ansible.builtin.systemd_service:
+      daemon_reload: true
 
-- name: ENABLING AND RESTARTING THE SERVICE 
-  ansible.builtin.service:
-    name: user
-    state: restarted
-    enabled: yes
+  - name: ENABLING AND RESTARTING THE SERVICE 
+    ansible.builtin.service:
+      name: user
+      state: restarted
+      enabled: yes
 
-- name: COPYING MONGO.YAML
-  ansible.builtin.copy:
-    src: mongo.repo
-    dest: /etc/yum.repos.d/mongo.repo
+  - name: COPYING MONGO.YAML
+    ansible.builtin.copy:
+      src: mongo.repo
+      dest: /etc/yum.repos.d/mongo.repo
 
-- name: INSTALLING MONGODB ORG
-  ansible.builtin.yum:
-    name: mongodb-org-shell
-    state: installed
+  - name: INSTALLING MONGODB ORG
+    ansible.builtin.yum:
+      name: mongodb-org-shell
+      state: installed
 
 
-- name: LOADING THE SCHEMA
-  ansible.builtin.command: mongo --host mongodb.suraj.website < /app/schema/user.js
+  - name: LOADING THE SCHEMA
+    ansible.builtin.command: mongo --host mongodb.suraj.website < /app/schema/user.js
 
-- name: RESTARTING THE SERVICE
-  ansible.builtin.service:
-    name: user
-    state: restarted
-    enabled: true
+  - name: RESTARTING THE SERVICE
+    ansible.builtin.service:
+      name: user
+      state: restarted
+      enabled: true
 
 
