@@ -61,7 +61,6 @@
 
   - name: DEAMON RELOADING
     ansible.builtin.systemd_service:
-      state: restarted
       daemon_reload: true
 
   - name: ENABLING AND RESTARTING THE SERVICE 
