@@ -34,9 +34,8 @@
 
   - when: directory.stat.exists == false
     name: CREATING APP DIRECTORY
-    becomes: yes
     ansible.builtin.file: 
-     path: /app
+      path: /app
 
   - name: DOWNLOADING THE APPLICATION
     ansible.builtin.get_url:
