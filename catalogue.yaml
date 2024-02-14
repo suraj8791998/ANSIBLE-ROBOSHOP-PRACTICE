@@ -51,6 +51,8 @@
 
   - name: INSTALLING THE DEPENENDECIES
     ansible.builtin.command: npm install 
+    args:
+     chdir: /app
 
   - name: COPYING CATALOGUE SERVICE 
     ansible.builtin.copy:
