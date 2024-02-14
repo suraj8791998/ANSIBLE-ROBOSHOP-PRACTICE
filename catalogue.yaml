@@ -72,7 +72,7 @@
   - name: INSTALLING MONGODB ORG
     ansible.builtin.yum:
       name: mongodb-org-shell
-      state: latest
+      state: present
 
   - name: COPYING MONGO.YAML
     ansible.builtin.copy:
