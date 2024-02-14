@@ -32,7 +32,53 @@
     ansible.builtin.debug:
       msg: "{{directory}}"
 
+  - when: directory.stat.exists == false
+    name: CREATING APP DIRECTORY
+    ansible.builtin.file: 
+     path: /app
 
+  - name: DOWNLOADING THE APPLICATION
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/catalogue.zip
+      dest: /tmp/catalogue.zip
+
+  - name: UNZIPPING THE APPLICATION 
+    ansible.builtin.unarchive:
+      src: /tmp/catalogue.zip
+      dest: /app
+      remote_src: yes
+
+  - name: INSTALLING THE DEPENENDECIES
+    ansible.builtin.command: npm install 
+
+  - name: COPYING CATALOGUE SERVICE 
+    ansible.builtin.copy:
+      src: catalogue.service
+      dest: /etc/systemd/system/catalogue.service
+
+  - name: DEAMON RELOADING
+    ansible.builtin.systemd_service:
+      state: restarted
+      daemon_reload: true
+
+  - name: ENABLING AND RESTARTING THE SERVICE 
+    ansible.builtin.service:
+      name: catalogue
+      state: restarted
+      enabled: yes
+
+  - name: INSTALLING MONGODB ORG
+    ansible.builtin.yum:
+      name: mongodb-org
+      state: latest
+
+  - name: COPYING MONGO.YAML
+    ansible.builtin.copy:
+      src: mongo.repo
+      dest: /etc/yum.repos.d/mongo.repo
+
+  - name: LOADING THE SCHEMA
+    ansible.builtin.command: mongo --host mongodb.suraj.website </app/schema/catalogue.js
 
 
       
