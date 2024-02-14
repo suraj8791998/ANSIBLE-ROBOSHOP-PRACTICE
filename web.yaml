@@ -18,6 +18,11 @@
     ansible.builtin.file:
       path: /usr/share/nginx/html
       state: absent
+  
+  - name: create html directory
+    ansible.builtin.file:
+      path: /usr/share/nginx/html
+      state: director
 
   - name: DOWNLOADING THE FRONTEND CONTENT
     ansible.builtin.get_url:
