@@ -34,6 +34,7 @@
 
   - when: directory.stat.exists == false
     name: CREATING APP DIRECTORY
+    becomes: yes
     ansible.builtin.file: 
      path: /app
 
