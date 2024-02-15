@@ -35,23 +35,23 @@
     path: /app
     state: directory
 
-  - name: DOWNLOADING THE APPLICATION CODE
-    ansible.builtin.get_url:
-      url: https://roboshop-builds.s3.amazonaws.com/shipping.zip
-      dest: /tmp/shipping.zip
+- name: DOWNLOADING THE APPLICATION CODE
+  ansible.builtin.get_url:
+    url: https://roboshop-builds.s3.amazonaws.com/shipping.zip
+    dest: /tmp/shipping.zip
 
-  - name: UNZIPPING THE APPLICATION 
-    ansible.builtin.unarchive:
-      src: /tmp/catalogue.zip
-      dest: /app
-      remote_src: yes
+- name: UNZIPPING THE APPLICATION 
+  ansible.builtin.unarchive:
+    src: /tmp/catalogue.zip
+    dest: /app
+    remote_src: yes
 
-  - name: INSTALLING THE DEPENENDECIES
-    ansible.builtin.command: mvn clean package
-    args:
-     chdir: /app
+- name: INSTALLING THE DEPENENDECIES
+  ansible.builtin.command: mvn clean package
+  args:
+  chdir: /app
 
-  - name: RENAME JAR FILE
-    ansible.builtin.command: mv target/shipping-1.0.jar shipping.jar
-    args:
-      chdir: /app
+- name: RENAME JAR FILE
+  ansible.builtin.command: mv target/shipping-1.0.jar shipping.jar
+  args:
+    chdir: /app
