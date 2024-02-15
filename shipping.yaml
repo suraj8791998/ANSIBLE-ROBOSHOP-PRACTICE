@@ -42,9 +42,9 @@
 
   - name: UNZIPPING THE APPLICATION 
     ansible.builtin.unarchive:
-      src: /tmp/catalogue.zip
+      src: /tmp/shipping.zip
       dest: /app
-      
+      remote_src: yes 
 
   - name: INSTALLING THE DEPENENDECIES
     ansible.builtin.command: mvn clean package
